@@ -1,0 +1,63 @@
+Infelizmente não consegui finalizar o projeto a tempo, pois meu computador deu problemas com o SQL Server e tentei fazer com MySQL pra tentar cobrir o tempo, porém também não consegui no tempo demandado do projeto pelo coodesh.
+
+Caso tenham interesse, posso finalizar posteriormente com mais uma chance.
+
+Eu tentei obter essa base de dados para utilizar no projeto:
+
+https://github.com/ShaidHasanShuvo/Bike_Stores
+
+Acredito ser a referência que usaram no teste, pois todas as tabelas batem.
+
+De toda forma, para não ficar sem fazer nada, irei passar quais as querys provavelmente fariam sentido com base no que foi pedido no README do projeto, porém não pude testá-las para ter certeza se funcionariam.
+
+Querys:
+
+Listar todos Clientes que não tenham realizado uma compra:
+
+SELECT cus.* FROM customers AS cus 
+LEFT JOIN orders AS ord
+ON ord.customer_id = cus.customer_id
+WHERE ord.customer_id = null;
+
+Query para cruzar tabelas, deixando exibir apenas dados da tabela à esquerda (customers) e capturar apenas o que sobrar da diferença entre elas, com parâmetro do customer_id.
+
+Listar os Produtos que não tenham sido comprados:
+
+SELECT prod.* FROM products AS prod 
+LEFT JOIN order_items AS ord_item
+ON prod.product_id = ord_item.product_id
+WHERE ord_item.product_id = null;
+
+Query para cruzar tabelas, deixando exibir apenas dados da tabela à esquerda (products) e capturar apenas o que sobrar da diferença entre elas, com parâmetro do product_id.
+
+Listar os Produtos sem Estoque:
+
+SELECT product_id, product_name 
+FROM products AS prod 
+INNER JOIN stocks AS sto
+WHERE sto.quantity = 0;
+
+Query para cruzar tabelas e retornar apenas id e nome de produtos que estejam com quantidade zerada de estoque na tabela stocks.
+
+Agrupar a quantidade de vendas de uma determinada Marca por Loja:
+
+SELECT sto.store_id, sto.store_name, bra.brand_id, bra.brand_name, SUM(ord_item.quantity)  FROM orders AS ord 
+INNER JOIN stores AS sto
+ON ord.store_id = sto.store_id
+INNER JOIN order_items AS ord_item
+ON ord.order_id = ord_item.order_id
+INNER JOIN products as prod
+ON prod.product_id = ord_item.product_id
+INNER JOIN brands AS bra
+ON bra.brand_id = prod.brand_id
+GROUP BY sto.store_id, bra.brand_id
+
+Query para relacionar diversas tabelas e buscar trazer o resultado da soma de vendas de determinado produto atrelado à determinadas marcas e lojas.
+
+Listar os Funcionarios que não estejam relacionados a um Pedido:
+
+SELECT staf.* FROM orders AS ord
+RIGHT JOIN staffs AS staf
+WHERE ord.staff_id = null;
+
+Listagem de funcionários, com cruzamento de tabelas, para reconhecer apenas registros que estejam nulos na tabela da esquerda (orders) e exibir apenas dados da direita (staffs).
